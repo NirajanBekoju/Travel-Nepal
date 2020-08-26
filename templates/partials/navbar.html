@@ -35,13 +35,17 @@
           <li class="nav-item">
             <a class="nav-link" href="#">Explore</a>
           </li>
+          {% if user.is_authenticated %}
+            {% if user.is_agency %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'agency_dashboard' %}">Agency</a>
+            </li>
+            {% endif %}
+          {% endif %}
         </ul>
 
         {% if user.is_authenticated %}
         <span>Welcome {{ user.first_name }} {{ user.last_name }}</span>
-        <a href="{% url 'dashboard' %}">
-          Dashboard
-        </a>
         <!-- logout link -->
         <a href="javascript:{document.getElementById('logout').submit()}" class="btn btn-default">Logout</a>
         

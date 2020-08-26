@@ -50,8 +50,7 @@ def login(request):
         user = auth.authenticate(email=email, password=password)
         if user is not None:
             auth.login(request, user)
-            messages.success(request, 'You are now logged in')
-            return redirect('dashboard')
+            return redirect('index')
         else:
             messages.error(request, 'Invalid Username or Password')
             return redirect('login')
@@ -68,5 +67,5 @@ def logout(request):
 
 def dashboard(request):
     if request.user.is_authenticated:
-        return render(request, 'accounts/dashboard.html')
+        return render(request, 'pages/index.html')
     raise Http404   

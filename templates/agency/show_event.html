@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h1>{{ event.title }}</h1>
+            <img src="/media/{{ event.image  }}" alt="Event Image" class="img-fluid">
+            <p>{{ event.description }}</p>
+            <span class="font-weight-bold">Location : {{ event.location }}</span><br>
+            <span class="font-weight-bold">Booking Date Limit : {{ event.booking_date_limit }}</span>
+
+            <a href="javascript:{document.getElementById('hide').submit()}" class="btn btn-danger" onclick="return confirm('Are you suer you want to hide this event? It cannot be undone.')">Hide Event</a>
+
+            <form action="{% url 'delete_event' id=event.id %}" method="POST" id="hide">
+                {% csrf_token %}
+                <input type="hidden">
+            </form>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

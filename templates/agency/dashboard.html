@@ -3,15 +3,44 @@
 <div class="container">
     <div class="row my-3">
         <div class="col-md-8">
+            {% include 'partials/alerts.html' %}
             <h1>{{ agency.name }}</h1>
-            <span class="font-weight-bold">Managing Director : {{ agency.managing_director }}</span>
-            <span>Location : {{ agency.address }}</span>
-            <span>Phone : {{ agency.phone }}</span>
+            <p class="font-weight-bold">Managing Director : {{ agency.managing_director }}</p>
+            <p>Location : {{ agency.address }}</p>
+            <p>Phone : {{ agency.phone }}</p>
             <p>{{ agency.description }}</p>     
             <img src="/media/{{ agency.photo }}" alt="" class="img-fluid">
         </div>
         <div class="col-md-4">
             <a href="{% url 'add_events' %}">Add Events</a>
+            {% if upcoming_events %}
+            <div>
+                <h4>Up Coming Events</h4>
+                {% for event in upcoming_events %}
+                <div class="list-group mb-2">
+                    <a href="{% url 'show_event' id=event.id %}" class="list-group-item list-group-item-action flex-column align-items-start active">
+                        <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ event.title }}</h5>
+                        <small>3 days ago</small>
+                        </div>
+                        <p class="mb-1">Location : {{ event.location }}</p>
+                        <p class="mb-1">Booking Date Limit : {{ event.booking_date_limit }}</p>
+                        <a href="{% url 'update_event' id=event.id %}" class="btn btn-success">Update Event</a>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% if recent_events %}
+                <div>
+                    <h4>Recent Events</h4>
+                    <ul class="list-group">
+                        {% for event in recent_events %}
+                            <li class="list-group-item">{{ event.title }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>

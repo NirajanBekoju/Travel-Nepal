@@ -10,7 +10,9 @@
             <p>{{ agency.description }}</p>     
             <img src="/media/{{ agency.photo }}" alt="" class="img-fluid">
         </div>
-        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <a href="{% url 'add_events' %}">Add Events</a>
+        </div>
     </div>
 </div>
 

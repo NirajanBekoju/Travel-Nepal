@@ -27,11 +27,11 @@ class Agency(models.Model):
 class Event(models.Model):
     title = models.CharField(max_length=500)
     description = models.TextField()
-    image = models.ImageField(upload_to = get_file_path)
+    image = models.ImageField(upload_to = 'images/events')
     location = models.CharField(max_length=100)
+    booking_date_limit = models.DateTimeField()
     agency_id = models.ForeignKey(Agency, on_delete=models.DO_NOTHING, limit_choices_to={'is_active': True},)
     is_display = models.BooleanField(default=True)
-    booking_date_limit = models.DateTimeField()
     registered_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
 

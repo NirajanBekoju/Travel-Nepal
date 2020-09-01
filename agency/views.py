@@ -2,45 +2,46 @@ from django.shortcuts import render, Http404, HttpResponse, get_object_or_404, r
 from .models import Agency, Event
 from django.contrib import messages
 from .forms import AddEventForm, UpdateEventForm
+from .decorators import is_agency
 
+@is_agency
 def agency_dashboard(request):
-    if request.user.is_agency:
-        agency = Agency.objects.filter(agent_id=request.user.id).first()
-        upcoming_events = Event.objects.filter(is_display=True, agency_id=request.user.agency)
-        recent_events = Event.objects.filter(is_display=False, agency_id=request.user.agency).order_by('-updated_date')[:10]
+    agency = Agency.objects.filter(agent_id=request.user.id).first()
+    upcoming_events = Event.objects.filter(is_display=True, agency_id=request.user.agency)
+    recent_events = Event.objects.filter(is_display=False, agency_id=request.user.agency).order_by('-updated_date')[:10]
 
-        context = {
-            'agency':agency,
-            'upcoming_events':upcoming_events,
-            'recent_events':recent_events
-        } 
-        return render(request, 'agency/dashboard.html', context)
-    else:
-        raise Http404
-
+    context = {
+        'agency':agency,
+        'upcoming_events':upcoming_events,
+        'recent_events':recent_events
+    } 
+    return render(request, 'agency/dashboard.html', context)
+    
 # CRUD OPERATION FOR EVENTS
+@is_agency
 def add_event(request):
     # Access if and only if user is agency 
-    if request.user.is_agency:
-        if request.method == 'POST':
-            form = AddEventForm(request.POST, request.FILES)
-            if form.is_valid():
-                addEvent = form.save(commit=False)
-                addEvent.agency_id = request.user.agency
-                add_event = addEvent.save()
-                return HttpResponse('Form Saved')
-            else:
-                context = {
-                    'form':form
-                }
-                return render(request, 'agency/add_event.html', context)
+    if request.method == 'POST':
+        form = AddEventForm(request.POST, request.FILES)
+        if form.is_valid():
+            addEvent = form.save(commit=False)
+            addEvent.agency_id = request.user.agency
+            add_event = addEvent.save()
+            messages.success(request, 'Event has been added successfully.')
+            return redirect('agency_dashboard')
         else:
-            form = AddEventForm()
             context = {
                 'form':form
             }
             return render(request, 'agency/add_event.html', context)
+    else:
+        form = AddEventForm()
+        context = {
+            'form':form
+        }
+        return render(request, 'agency/add_event.html', context)
 
+@is_agency
 def show_event(request, id):
     event = Event.objects.filter(id = id).first()
     # check if the event belongs to the agency
@@ -52,7 +53,7 @@ def show_event(request, id):
     }
     return render(request, 'agency/show_event.html', context)
 
-
+@is_agency
 def update_event(request, id):
     event = get_object_or_404(Event, id=id)
     form = AddEventForm(request.POST or None, instance= event)
@@ -87,7 +88,7 @@ def update_event(request, id):
         }
         return render(request, 'agency/edit_event.html', context)
 
-
+@is_agency
 def delete_event(request, id):
     if request.method == "POST":
         event = Event.objects.filter(id=id).first()
@@ -99,5 +100,4 @@ def delete_event(request, id):
         else:
             messages.error(request, 'You are not authorized to delete this event.')
             return redirect('agency_dashboard')
-    else:
-        raise Http404
+    

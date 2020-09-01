@@ -26,9 +26,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'phone_field', # For the phone field
     'accounts',
     'pages',
     'agency',
+    'explore',
 ]
 
 MIDDLEWARE = [
